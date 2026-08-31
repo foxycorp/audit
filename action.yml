@@ -1,0 +1,39 @@
+name: FoxyGEO Audit
+description: Lint llms.txt, GPTBot/ClaudeBot access, and schema. Comment AI Readiness on the PR with a public FoxyGEO report.
+author: FoxyGEO
+branding:
+  icon: search
+  color: blue
+inputs:
+  domain:
+    description: Production domain to publish as a public foxygeo.com report. Preview hosts are ignored.
+    required: false
+    default: ''
+  publish:
+    description: Set to "false" to lint without publishing a public report.
+    required: false
+    default: 'true'
+  fail-on:
+    description: error | warning | never
+    required: false
+    default: 'error'
+  github-token:
+    description: Token used to write the sticky PR comment.
+    required: false
+    default: ${{ github.token }}
+  working-directory:
+    description: Directory that contains robots.txt / llms.txt / HTML.
+    required: false
+    default: '.'
+runs:
+  using: composite
+  steps:
+    - name: Run FoxyGEO audit
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        FOXYGEO_DOMAIN: ${{ inputs.domain }}
+        FOXYGEO_PUBLISH: ${{ inputs.publish }}
+        FOXYGEO_FAIL_ON: ${{ inputs.fail-on }}
+      run: node "$GITHUB_ACTION_PATH/bin/foxygeo-audit.js" --ci

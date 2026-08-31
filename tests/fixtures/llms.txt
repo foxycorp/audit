@@ -1,0 +1,7 @@
+# Example
+
+> Example is a public API for developers.
+
+## Pages
+- https://example.com/
+- https://example.com/docs
